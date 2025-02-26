@@ -11,6 +11,12 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private Rigidbody2D rb;
     public GameManager gm;
+    public Transform attackpoint;
+    public float attackrange = 0.2f;
+    public LayerMask Enemies;
+    public int attackDamage = 2;
+    public float attackrate = 2f;
+    float nextattacktime = 0f;
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -18,21 +24,22 @@ public class PlayerController : MonoBehaviour
     }
     void Start()
     {
-        
+
     }
 
     void Update()
     {
-        if (gm.IsGameOver() || (gm.IsGameWin()))return;
+        if (gm.IsGameOver() || (gm.IsGameWin())) return;
         HandleMovement();
         HandleJump();
         UpdateAnimation();
+        HandleAttack();
     }
 
     private void HandleMovement()
     {
         float moveInput = Input.GetAxis("Horizontal");
-        rb.linearVelocity = new Vector2(moveInput*moveSpeed, rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
         if (moveInput > 0) transform.localScale = new Vector3(1, 1, 1);
         else if (moveInput < 0) transform.localScale = new Vector3(-1, 1, 1);
     }
@@ -42,7 +49,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-        }    
+        }
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
 
@@ -53,4 +60,30 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("isRunning", isRunning);
         animator.SetBool("isJumping", isJumping);
     }
+
+    private void HandleAttack()
+    {
+        if (Time.time >= nextattacktime)
+        {
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                //  isAttacking = true;
+                animator.SetTrigger("Attack");
+                Collider2D[] EnemiesHit = Physics2D.OverlapCircleAll(attackpoint.position, attackrange, Enemies);
+
+                foreach (Collider2D enemy in EnemiesHit)
+                {
+                    enemy.GetComponent<Enemy>().TakeDamage(attackDamage);
+                }
+                nextattacktime = Time.time + 1/attackrate;
+            }
+        }
+        
+    }
+
+    public void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireSphere(attackpoint.position, attackrange);
+    }
+
 }

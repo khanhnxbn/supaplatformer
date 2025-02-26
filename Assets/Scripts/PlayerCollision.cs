@@ -11,22 +11,21 @@ public class PlayerCollision : MonoBehaviour
         {
             Destroy(collision.gameObject);
             gameManager.AddScore(1);
-            Debug.Log("Hit coin");
         }
         else if (collision.gameObject.CompareTag("Trap"))
         {
             gameManager.GameOver();
         }
 
-        else if (collision.gameObject.CompareTag("Enemy"))
-        {
-            gameManager.GameOver();
-        }
+       // else if (collision.gameObject.CompareTag("Enemy"))
+       // {
+       //     gameManager.GameOver();
+      //  }
 
         else if (collision.gameObject.CompareTag("Key"))
         {
             Destroy(collision.gameObject);
-            gameManager.GameWin();
+            gameManager.GameWin();        
         }
     }
 }

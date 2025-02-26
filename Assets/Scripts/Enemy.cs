@@ -8,10 +8,13 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float distance = 5f;
     private Vector3 startPos;
     private bool movingRight = true;
-
+    public int maxHealth = 20;
+    public int currentHealth;
+    public Animator animator;
     void Start()
     {
         startPos = transform.position;
+        currentHealth = maxHealth;
     }
 
     // Update is called once per frame
@@ -48,4 +51,20 @@ public class Enemy : MonoBehaviour
         scaler.x *= -1;
         transform.localScale = scaler;
     }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        animator.SetTrigger("Hurt");
+
+        if (currentHealth <= 0) Die();
+    }
+
+    void Die()
+    {
+        animator.SetBool("isDead", true);
+        GetComponent<BoxCollider2D>().enabled = false;
+        this.enabled = false;
+    }
+
     }

@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private GameObject gameOverUi;
     [SerializeField] private GameObject gameWinUi;
-
+    [SerializeField] private GameObject InventoryUI;
 
     private bool isGameOver = false;
     private bool isGameWin = false;
@@ -15,9 +15,10 @@ public class GameManager : MonoBehaviour
     {
         gameOverUi.SetActive(false);
         gameWinUi.SetActive(false);
+        InventoryUI.SetActive(false);
     }
 
-    // Update is called once per frame
+  
    
 
     public void AddScore(int points)
